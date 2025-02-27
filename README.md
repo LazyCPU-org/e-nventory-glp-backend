@@ -106,10 +106,9 @@ E-nventory provides a comprehensive backend system for managing delivery operati
 
 - Install Go 1.22
 - Run `go mod tidy`
-- Copy `.env.example` to `.env` and configure
+- Copy `.env.example` to `.env.local`, `.env.dev` or `.env.production` and configure
 - Run database migrations: `go run migrations/migrate.go`
 - Start the development server: `go run main.go`
-- For API testing, Postman collection is available in `docs/postman`
 
 ## Production Deployment
 
@@ -117,7 +116,6 @@ E-nventory provides a comprehensive backend system for managing delivery operati
 - Configure environment variables for production
 - Set up nginx as reverse proxy
 - Configure SSL/TLS certificates
-- Start the service with systemd or similar
 - Set up monitoring with Prometheus and Grafana
 
 ## Docker Deployment

@@ -8,7 +8,7 @@ x-app-common: &app-common
     mysql:
       condition: service_healthy
   networks:
-    - app-network
+    - glp-network
 
 services:
   app:
@@ -26,11 +26,11 @@ services:
     image: mysql:8
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-devpassword}  # Default value
-      MYSQL_DATABASE: ${DB_NAME:-pubplay}
+      MYSQL_DATABASE: ${DB_NAME:-e-glp}
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
-      - app-network
+      - glp-network
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-devpassword}"]
       timeout: 5s
@@ -40,5 +40,5 @@ volumes:
   mysql_data:
 
 networks:
-  app-network:
+  glp-network:
     driver: bridge
