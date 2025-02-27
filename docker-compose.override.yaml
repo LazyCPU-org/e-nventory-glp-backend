@@ -1,7 +1,7 @@
 services:
   app:
     env_file:
-      - .env.${APP_ENV:-dev}
-  mysql:
+      - .env.${APP_ENV:-local}
+  postgres:
     env_file:
-      - .env.${APP_ENV:-dev}
+      - .env.${APP_ENV:-local}

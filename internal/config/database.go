@@ -6,14 +6,12 @@ import (
 	"log"
 	"time"
 
-	_ "database/sql/driver"
-
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/lib/pq"
 )
 
 const DB_HOST_KEY = "DB_HOST"
 const DB_PORT_KEY = "DB_PORT"
-const DB_PASSWORD_KEY = "DB_PASSWORD"
+const DB_PASSWORD_KEY = "POSTGRES_PASSWORD"
 const DB_USER_KEY = "DB_USER"
 const DB_NAME_KEY = "DB_NAME"
 
@@ -27,10 +25,10 @@ type DBConfig struct {
 
 func NewDBConfig() *DBConfig {
 	dbHost := getEnv(DB_HOST_KEY, "localhost")
-	dbPort := getEnv(DB_PORT_KEY, "3306")
-	dbUser := getEnv(DB_USER_KEY, "root")
-	dbPassword := getEnv(DB_PASSWORD_KEY, "root")
-	dbName := getEnv(DB_NAME_KEY, "db-e-glp")
+	dbPort := getEnv(DB_PORT_KEY, "5432")
+	dbUser := getEnv(DB_USER_KEY, "pguser")
+	dbPassword := getEnv(DB_PASSWORD_KEY, "devpassword")
+	dbName := getEnv(DB_NAME_KEY, "e-glp")
 
 	return &DBConfig{
 		Host:     dbHost,
@@ -42,12 +40,12 @@ func NewDBConfig() *DBConfig {
 }
 
 func (c *DBConfig) DSN() string {
-	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
-		c.User, c.Password, c.Host, c.Port, c.DBName)
+	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		c.Host, c.Port, c.User, c.Password, c.DBName)
 }
 
 func NewDB(config *DBConfig) (*sql.DB, error) {
-	db, err := sql.Open("mysql", config.DSN())
+	db, err := sql.Open("postgres", config.DSN())
 	if err != nil {
 		return nil, fmt.Errorf("error opening database: %w", err)
 	}

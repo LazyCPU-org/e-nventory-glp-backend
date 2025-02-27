@@ -5,7 +5,7 @@ x-app-common: &app-common
   volumes:
     - .:/code
   depends_on:
-    mysql:
+    postgres:
       condition: service_healthy
   networks:
     - glp-network
@@ -14,30 +14,35 @@ services:
   app:
     <<: *app-common
     environment:
-      APP_ENV: ${APP_ENV:-dev}
+      APP_ENV: ${APP_ENV:-local}
       DOCKER: "true"
       APP_PORT: ":5000"
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-devpassword}
-      DB_HOST: ${DB_HOST:-mysql}  # Changed from localhost to mysql service name
+      DB_HOST: ${DB_HOST:-postgres}  # Changed from localhost to postgres service name
+      DB_NAME: ${POSTGRES_DB:-e-glp}
+      DB_USER: ${POSTGRES_USER:-pguser}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-devpassword}
     ports:
-      - "5050:5000"
+      - "5000:5000"
 
-  mysql:
-    image: mysql:8
+  postgres:
+    image: postgres:14
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-devpassword}  # Default value
-      MYSQL_DATABASE: ${DB_NAME:-e-glp}
+      POSTGRES_USER: ${POSTGRES_USER:-pguser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-devpassword}
+      POSTGRES_DB: ${POSTGRES_DB:-e-glp}
     volumes:
-      - mysql_data:/var/lib/mysql
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - glp-network
+    ports:
+      - "5432"
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-devpassword}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-pguser} -d ${POSTGRES_DB:-e-glp}"]
       timeout: 5s
       retries: 10
 
 volumes:
-  mysql_data:
+  postgres_data:
 
 networks:
   glp-network:
