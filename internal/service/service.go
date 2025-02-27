@@ -6,18 +6,18 @@ import (
 
 type Service interface {
 	// Add more service methods as needed
-	PlaylistService
+	//ExampleService
 }
 
 type service struct {
-	repo            repository.Repository
-	PlaylistService // Add PlaylistService field
+	repo repository.Repository
+	//ExampleService // Add ExampleService field
 }
 
 func NewService(repo repository.Repository) Service {
-	playlistService := NewPlaylistService(repo.GetPlaylistRepository())
+	//ExampleService := NewExampleService(repo.GetExampleRepository())
 	return &service{
-		repo:            repo,
-		PlaylistService: playlistService, // Initialize PlaylistService
+		repo: repo,
+		//ExampleService: exampleService, // Initialize ExampleService
 	}
 }

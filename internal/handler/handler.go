@@ -7,17 +7,17 @@ import (
 )
 
 type Handler struct {
-	svc             service.Service
-	playlistHandler *PlaylistHandler
+	svc service.Service
+	//exampleHandler *ExampleHandler
 }
 
 func NewHandler(svc service.Service) *Handler {
 	return &Handler{
-		svc:             svc,
-		playlistHandler: NewPlaylistHandler(svc),
+		svc: svc,
+		//exampleHandler: NewExampleHandler(svc),
 	}
 }
 
 func (h *Handler) RegisterRoutes(mux *http.ServeMux) {
-	h.playlistHandler.RegisterRoutes(mux)
+	//h.exampleHandler.RegisterRoutes(mux)
 }

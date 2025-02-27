@@ -30,7 +30,7 @@ func NewDBConfig() *DBConfig {
 	dbPort := getEnv(DB_PORT_KEY, "3306")
 	dbUser := getEnv(DB_USER_KEY, "root")
 	dbPassword := getEnv(DB_PASSWORD_KEY, "root")
-	dbName := getEnv(DB_NAME_KEY, "pubplay")
+	dbName := getEnv(DB_NAME_KEY, "db-e-glp")
 
 	return &DBConfig{
 		Host:     dbHost,

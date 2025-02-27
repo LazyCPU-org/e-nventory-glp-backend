@@ -1,44 +1,37 @@
-# Public Music Playlist Viewer API
+# E-nventory
+# Dashboard Backend for Delivery Business
 
 ## Overview
 
-The Public Music Playlist Viewer API is a real-time backend service designed for public spaces like cafes, restaurants, or retail stores. It provides a robust API for managing and broadcasting music playlist information, enabling client applications to display currently playing songs and upcoming tracks in real-time.
-
-## Features
-
-- Real-time playlist state management
-- WebSocket support for live updates
-- RESTful API endpoints for playlist data
-- Music service provider integration support
-- Authentication system for admin operations
-- Rate limiting and connection management
-- Comprehensive logging system
-- Health check endpoints
-- Metrics collection for monitoring
+E-nventory provides a comprehensive backend system for managing delivery operations across multiple physical locations. The system handles user authentication, authorization, data management, and analytics for delivery operations.
 
 ## Technical Stack
 
 - Go 1.22
 - Standard library SSE implementation
-- SQL database for persistent storage
-- Redis for caching (optional)
-- In-memory state management
+- PostgreSQL for persistent storage
+- Redis for caching and session management
+- In-memory state management for real-time updates
 
 ## System Requirements
 
 - Go 1.22 or higher
 - Minimum 1GB RAM
-- PostgreSQL 14+ or MySQL 8+
-- Redis 6+ (optional)
+- PostgreSQL 14+
+- Redis 6+ (for caching and real-time updates)
 
 ## Architecture
 
-The system implements a publisher-subscriber pattern:
+### User Hierarchy
+- **Superadmins**: Global access to all system features and data
+- **Admins**: Access to data across all locations
+- **Supervisors/Managers**: Location-specific access to delivery employee data
+- **Delivery Employees**: Access to personal performance data only
 
-- Music source updates are received via SSE
-- Backend maintains the current state
-- Changes are broadcast to clients
-- State persistence ensures system reliability
+### Data Organization
+- Company-wide metrics and analytics
+- Location-specific operations and performance data
+- Individual delivery metrics and history
 
 ## API Documentation
 
@@ -47,30 +40,66 @@ The system implements a publisher-subscriber pattern:
 
 ## Key Endpoints:
 
-### Playlist Management:
+### Authentication
+- `POST /auth/login` - User login and JWT token generation
+- `POST /auth/refresh` - Refresh JWT token
+- `POST /auth/logout` - Invalidate current token
 
-- GET `/playlist/current` - Get current track
-- GET `/playlist/queue` - Get upcoming tracks
-- GET `/sse/playlist` - Real-time updates
+### User Management
+- `GET /users` - List users (filtered by role and location)
+- `POST /users` - Create new user
+- `GET /users/:id` - Get user details
+- `PUT /users/:id` - Update user
+- `DELETE /users/:id` - Delete user
+- `POST /users/:id/role` - Assign role to user
 
+### Location Management
+- `GET /locations` - List all locations
+- `POST /locations` - Create new location
+- `GET /locations/:id` - Get location details
+- `PUT /locations/:id` - Update location
+- `DELETE /locations/:id` - Delete location
+- `GET /locations/:id/stats` - Get location statistics
+- `GET /locations/:id/employees` - List employees at location
+- `GET /locations/:id/supervisors` - List supervisors at location
 
-### Admin Operations:
+### Supervisor Management
+- `GET /supervisors` - List all supervisors
+- `GET /supervisors/:id/employees` - List employees assigned to supervisor
+- `POST /supervisors/:id/employees` - Assign employee to supervisor
+- `DELETE /supervisors/:id/employees/:employeeId` - Remove employee assignment
 
-- POST `/admin/playlist` - Update playlist
-- DELETE `/admin/track/{id}` - Remove track
-- PUT `/admin/track/reorder` - Reorder tracks
+### Delivery Management
+- `GET /deliveries` - List deliveries (filtered by location, date, status)
+- `POST /deliveries` - Create new delivery
+- `GET /deliveries/:id` - Get delivery details
+- `PUT /deliveries/:id` - Update delivery
+- `GET /employees/:id/deliveries` - Get employee's deliveries
+- `GET /employees/:id/stats` - Get employee performance statistics
 
+### Analytics
+- `GET /analytics/company` - Company-wide analytics (superadmin only)
+- `GET /analytics/locations/:id` - Location analytics (admin+ access)
+- `GET /analytics/supervisors/:id` - Supervisor team analytics
+- `GET /analytics/employees/:id` - Individual employee analytics
 
-### System Operations:
+## Database Schema
 
-- GET `/health` - System health check
-- GET `/metrics` - System metrics (protected)
+### Key Tables
+- `users` - User accounts and authentication
+- `roles` - User roles and permissions
+- `locations` - Physical operation locations
+- `supervisors` - Supervisor assignments and metadata
+- `employees` - Delivery employee data
+- `deliveries` - Delivery records
+- `analytics` - Performance metrics and statistics
 
 ## Setup Instructions
 
 - Clone the repository
-- Configure environment variables
-- Set up the database
+- Configure environment variables in `.env` file
+- Set up the PostgreSQL database and run migrations
+- Initialize Redis instance
 - Build and run the application
 
 ## Development
@@ -78,47 +107,51 @@ The system implements a publisher-subscriber pattern:
 - Install Go 1.22
 - Run `go mod tidy`
 - Copy `.env.example` to `.env` and configure
+- Run database migrations: `go run migrations/migrate.go`
 - Start the development server: `go run main.go`
+- For API testing, Postman collection is available in `docs/postman`
 
 ## Production Deployment
 
-- Build the application
-- Configure environment variables
-- Set up a reverse proxy
-- Configure SSL/TLS
-- Start the service
-- Monitor system health
+- Build the application: `go build -o e-nventory-backend`
+- Configure environment variables for production
+- Set up nginx as reverse proxy
+- Configure SSL/TLS certificates
+- Start the service with systemd or similar
+- Set up monitoring with Prometheus and Grafana
 
 ## Docker Deployment
 
 - Ensure you have Docker installed.
-- Build the Docker image: `docker build -t publist_backend .`
-- Run the Docker container: `docker run -p 5000:5000 publist_backend`
+- Build the Docker image: `docker build -t e-nventory-backend .`
+- Run the Docker container: `docker run -p 5000:5000 e-nventory-backend`
 
 - Alternatively, use Docker Compose:
   - Ensure you have Docker Compose installed.
   - Run `docker-compose up -d` to build and start the application and database.
 
-- To use different environment variables for different environments:
-  - Create a `.env` file (e.g., `.env.dev`, `.env.prod`) with the environment variables.
-  - Run `docker-compose --env-file .env.dev up -d` to use the environment variables from the `.env.dev` file.
+- Environment configuration:
+  - Create environment-specific files (`.env.dev`, `.env.staging`, `.env.prod`)
+  - Run with `docker-compose --env-file .env.prod up -d`
 
 ## Security Considerations
 
-- JWT-based authentication
-- Rate limiting implementation
-- CORS policy configuration
-- Input validation and sanitization
-- Secure WebSocket connections
-- Database connection encryption
+- JWT-based authentication with proper expiration and refresh mechanisms
+- Role-based access control for all endpoints
+- Rate limiting to prevent brute force attacks
+- CORS policy strictly configured for frontend domains
+- Input validation and sanitization on all user inputs
+- Database connection encryption and prepared statements
+- Regular security audits and dependency updates
 
 ## Scaling Considerations
 
-- Horizontal scaling support
-- Database connection pooling
-- Redis caching layer
-- Load balancer configuration
-- Realtime connection management
+- Horizontal scaling with multiple backend instances
+- Database connection pooling and optimization
+- Redis caching for frequently accessed data
+- Load balancer configuration for traffic distribution
+- Separate read/write database replicas for high load scenarios
+- Asynchronous processing for non-critical operations
 
 ## Contributing
 
