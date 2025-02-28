@@ -107,8 +107,26 @@ E-nventory provides a comprehensive backend system for managing delivery operati
 - Install Go 1.22
 - Run `go mod tidy`
 - Copy `.env.example` to `.env.local`, `.env.dev` or `.env.production` and configure
-- Run database migrations: `go run migrations/migrate.go`
 - Start the development server: `go run main.go`
+
+## Migrations
+- To execute the migration configuration use the following commands
+```terminal
+    # Apply all pending migrations
+    go run cmd/migrate/main.go -up
+
+    # Apply specific number of migrations
+    go run cmd/migrate/main.go -up -steps 2
+
+    # Rollback all migrations
+    go run cmd/migrate/main.go -down
+
+    # Rollback specific number of migrations
+    go run cmd/migrate/main.go -down -steps 1
+
+    # Run migrations and seed data
+    go run cmd/migrate/main.go -up -seed
+```
 
 ## Production Deployment
 
@@ -131,6 +149,13 @@ E-nventory provides a comprehensive backend system for managing delivery operati
 - Environment configuration:
   - Create environment-specific files (`.env.dev`, `.env.staging`, `.env.prod`)
   - Run with `docker-compose --env-file .env.prod up -d`
+
+- To run migrations when deploying we should use the following:
+  - Normal setup without migrations: `docker-compose up`
+  - Startup with migrations (using override file): `docker-compose -f docker-compose.yaml -f docker-compose.migrate.yaml up`
+  - Startup with migrations and seeding (using environment variables): `RUN_MIGRATIONS=true RUN_SEED=true docker-compose up`
+  - Run migrations only (without starting the application): `docker-compose run --rm app /usr/local/bin/migrator -up`
+  - For specific environments: `APP_ENV=staging RUN_MIGRATIONS=true docker-compose up`
 
 ## Security Considerations
 

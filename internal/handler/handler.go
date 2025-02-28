@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/dmarquinah/publist_backend/internal/service"
+	"github.com/LazyCPU-org/e-nventory-glp-backend/internal/service"
 )
 
 type Handler struct {

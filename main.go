@@ -10,11 +10,11 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/dmarquinah/publist_backend/internal/config"
-	"github.com/dmarquinah/publist_backend/internal/handler"
-	"github.com/dmarquinah/publist_backend/internal/middleware"
-	"github.com/dmarquinah/publist_backend/internal/repository"
-	"github.com/dmarquinah/publist_backend/internal/service"
+	"github.com/LazyCPU-org/e-nventory-glp-backend/internal/config"
+	"github.com/LazyCPU-org/e-nventory-glp-backend/internal/handler"
+	"github.com/LazyCPU-org/e-nventory-glp-backend/internal/middleware"
+	"github.com/LazyCPU-org/e-nventory-glp-backend/internal/repository"
+	"github.com/LazyCPU-org/e-nventory-glp-backend/internal/service"
 )
 
 func main() {
