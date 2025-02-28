@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/dmarquinah/publist_backend/internal/repository"
+	"github.com/LazyCPU-org/e-nventory-glp-backend/internal/repository"
 )
 
 type Service interface {
