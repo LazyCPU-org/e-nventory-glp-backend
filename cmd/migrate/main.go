@@ -60,7 +60,7 @@ func main() {
 	dbHost := getEnv("DB_HOST", "localhost")
 	dbPort := getEnv("DB_PORT", "5432")
 	dbName := getEnv("DB_NAME", "e-glp")
-	dbUser := getEnv("DB_USER", "pguser")
+	dbUser := getEnv("DB_USER", "postgres")
 	dbPassword := getEnv("POSTGRES_PASSWORD", "devpassword")
 
 	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable",

@@ -126,6 +126,12 @@ E-nventory provides a comprehensive backend system for managing delivery operati
 
     # Run migrations and seed data
     go run cmd/migrate/main.go -up -seed
+
+    # To clean the dirty state at the current version (-verbose is used for debugging):
+    go run cmd/migrate/main.go -clean -verbose
+
+    # Or to force a specific version (e.g., go back to clean version - 1):
+    go run cmd/migrate/main.go -force 1 -verbose
 ```
 
 ## Production Deployment
@@ -144,18 +150,18 @@ E-nventory provides a comprehensive backend system for managing delivery operati
 
 - Alternatively, use Docker Compose:
   - Ensure you have Docker Compose installed.
-  - Run `docker-compose up -d` to build and start the application and database.
+  - Run `docker compose up -d` to build and start the application and database.
 
 - Environment configuration:
   - Create environment-specific files (`.env.dev`, `.env.staging`, `.env.prod`)
-  - Run with `docker-compose --env-file .env.prod up -d`
+  - Run with `docker compose --env-file .env.prod up -d`
 
 - To run migrations when deploying we should use the following:
-  - Normal setup without migrations: `docker-compose up`
-  - Startup with migrations (using override file): `docker-compose -f docker-compose.yaml -f docker-compose.migrate.yaml up`
+  - Normal setup without migrations: `docker compose up`
+  - Startup with migrations (using override file): `docker compose -f docker-compose.yaml -f docker-compose.migrate.yaml up`
   - Startup with migrations and seeding (using environment variables): `RUN_MIGRATIONS=true RUN_SEED=true docker-compose up`
-  - Run migrations only (without starting the application): `docker-compose run --rm app /usr/local/bin/migrator -up`
-  - For specific environments: `APP_ENV=staging RUN_MIGRATIONS=true docker-compose up`
+  - Run migrations only (without starting the application): `docker compose run --rm app /usr/local/bin/migrator -up`
+  - For specific environments: `APP_ENV=staging RUN_MIGRATIONS=true docker compose up`
 
 ## Security Considerations
 
