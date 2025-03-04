@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS bulk_purchases (
     purchase_id SERIAL PRIMARY KEY,
     supplier_id INTEGER REFERENCES suppliers(supplier_id),
     business_location_id INTEGER REFERENCES business_locations(location_id),
-    administrator_id INTEGER REFERENCES administrators(user_id),
+    supervisor_id INTEGER REFERENCES supervisors(user_id),
     purchase_date DATE NOT NULL,
     delivery_date DATE,
     lpg_volume_kg DECIMAL(10,2) NOT NULL,
