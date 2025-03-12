@@ -38,6 +38,11 @@ E-nventory provides a comprehensive backend system for managing delivery operati
 - Authentication: JWT
 - Base URL: `/api/v1`
 
+To generate the OpenAPI documentation, run:
+```terminal
+go run cmd/openapi-gen/main.go --path docs
+```
+
 ## Key Endpoints:
 
 ### Authentication
@@ -114,22 +119,22 @@ E-nventory provides a comprehensive backend system for managing delivery operati
 ```terminal
     # Apply all pending migrations
     go run cmd/migrate/main.go -up
-
+    
     # Apply specific number of migrations
     go run cmd/migrate/main.go -up -steps 2
-
+    
     # Rollback all migrations
     go run cmd/migrate/main.go -down
-
+    
     # Rollback specific number of migrations
     go run cmd/migrate/main.go -down -steps 1
-
+    
     # Run migrations and seed data
     go run cmd/migrate/main.go -up -seed
-
+    
     # To clean the dirty state at the current version (-verbose is used for debugging):
     go run cmd/migrate/main.go -clean -verbose
-
+    
     # Or to force a specific version (e.g., go back to clean version - 1):
     go run cmd/migrate/main.go -force 1 -verbose
 ```
